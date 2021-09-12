@@ -3,7 +3,7 @@ import { downloadTextAs, copyTextToClipboard } from './save';
 import { toCsvString, toMdTableString } from './stringify';
 
 async function main() {
-  const rooms = extractRooms();
+  const rooms = await extractRooms();
 
   if (window.confirm('進捗部屋表をコピーしますか?')) {
     const text = toMdTableString(rooms);
