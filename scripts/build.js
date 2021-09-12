@@ -9,9 +9,10 @@ const { readFile, writeFile } = require('fs/promises');
     minify: true,
   });
 
-  const jsText = (await readFile('./dist/index.js')).toString();
-  const replaced = jsText.replace(/`\n`/g, "'\\n'");
-  await writeFile('./dist/index.js', replaced);
+  let src = (await readFile('./dist/index.js')).toString();
+  src = src.replace(/`\n`/g, "'\\n'");
+  src = 'javascript:' + src;
+  await writeFile('./dist/index.js', src);
 })().catch((err) => {
   console.error(err);
   process.exit(1);
