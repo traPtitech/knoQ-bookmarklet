@@ -32,22 +32,22 @@ async function showWeekMode(): Promise<void> {
   // 週ボタンをクリック
   document.querySelector<HTMLElement>('#lblModeW')!.click();
 
-  // 講義室情報が表示されるまで待つ
   await waitForLoading();
 }
 
 // 翌週分の講義室予約を表示する
 async function showNextWeek(): Promise<void> {
-  // 翌週ボタン
-  const button = document.querySelector<HTMLElement>(
-    '#ctl00_divMainContents > div:nth-child(10) > div.hideAtPrint > table.searchTablex > tbody > tr:nth-child(1) > td:nth-child(2) > a:nth-child(6)',
-  );
-  button!.click();
+  // 翌週ボタンをクリック
+  document
+    .querySelector<HTMLElement>(
+      '#ctl00_divMainContents > div:nth-child(10) > div.hideAtPrint > table.searchTablex > tbody > tr:nth-child(1) > td:nth-child(2) > a:nth-child(6)',
+    )!
+    .click();
 
-  // 講義室情報が表示されるまで待つ
   await waitForLoading();
 }
 
+// 講義室情報が表示されるまで待つ
 async function waitForLoading(): Promise<void> {
   for (let limit = 100; limit--; ) {
     await new Promise((r) => setTimeout(r, 100));
@@ -77,31 +77,27 @@ function extractRoomsOfRow(row: HTMLTableRowElement): Room[] {
     ? row.cells[1].innerText.trim()
     : row.cells[0].innerText.trim();
   const cells = row.querySelectorAll('td');
-  return Array.from(cells).flatMap((cell) => {
-    const room = extractRoomOfCell(cell);
-    return room ? { ...room, place: roomName } : [];
-  });
+  return Array.from(cells).flatMap((cell) =>
+    extractRoomOfCell(cell).map((room) => ({ ...room, place: roomName })),
+  );
 }
 
 // 週表示の講義室予約の表のマスからtraPの施設予約情報を抽出する
-function extractRoomOfCell(
-  cell: HTMLTableCellElement,
-): Omit<Room, 'place'> | null {
-  const info = cell.querySelector<HTMLSpanElement>('span > span');
-  if (!info) {
-    return null;
-  }
+function extractRoomOfCell(cell: HTMLTableCellElement): Omit<Room, 'place'>[] {
+  return Array.from(
+    cell.querySelectorAll<HTMLSpanElement>('span > span'),
+  ).flatMap((info) => {
+    const text = info.innerText;
+    if (!/デジタル創作同好会traP/.test(text)) {
+      return [];
+    }
 
-  const text = info.innerText;
-  if (!/デジタル創作同好会traP/.test(text)) {
-    return null;
-  }
+    let date = cell.dataset.date!; // yyyymmdd;
+    const [, timeStart, timeEnd] = text.match(/\((\d\d:\d\d).*(\d\d:\d\d)\)/)!; // hh:mm
 
-  let date = cell.dataset.date!; // yyyymmdd;
-  const [, timeStart, timeEnd] = text.match(/\((\d\d:\d\d).*(\d\d:\d\d)\)/)!; // hh:mm
-
-  date = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`;
-  const datetimeStart = new Date(`${date}T${timeStart}:00`);
-  const datetimeEnd = new Date(`${date}T${timeEnd}:00`);
-  return { timeStart: datetimeStart, timeEnd: datetimeEnd };
+    date = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`;
+    const datetimeStart = new Date(`${date}T${timeStart}:00`);
+    const datetimeEnd = new Date(`${date}T${timeEnd}:00`);
+    return { timeStart: datetimeStart, timeEnd: datetimeEnd };
+  });
 }
