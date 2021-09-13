@@ -8,12 +8,12 @@ export type Room = {
 
 // 講義室予約ページから4週間分のtraPの施設予約を抽出する
 export async function extractRooms(): Promise<Room[]> {
-  await showWeekMode();
+  await loadWeeklyReservations();
 
   const rooms: Room[] = [];
   for (let i = 0; i < 4; i++) {
     rooms.push(...extractRoomsOneWeek());
-    await showNextWeek();
+    await loadNextWeekReservations();
   }
 
   // timeStartの昇順でソート
@@ -23,20 +23,20 @@ export async function extractRooms(): Promise<Room[]> {
 }
 
 // 施設予約ページで週間表示の講義室予約を表示させる
-async function showWeekMode(): Promise<void> {
+async function loadWeeklyReservations(): Promise<void> {
+  // 週ボタンをクリック
+  document.querySelector<HTMLElement>('#lblModeW')!.click();
+
   // 講義室[大岡山]ボタンをクリック
   document
     .querySelector<HTMLElement>('#tbl2 > tbody > tr > td:nth-child(3) > a')!
     .click();
 
-  // 週ボタンをクリック
-  document.querySelector<HTMLElement>('#lblModeW')!.click();
-
   await waitForLoading();
 }
 
 // 翌週分の講義室予約を表示する
-async function showNextWeek(): Promise<void> {
+async function loadNextWeekReservations(): Promise<void> {
   // 翌週ボタンをクリック
   document
     .querySelector<HTMLElement>(
@@ -49,8 +49,8 @@ async function showNextWeek(): Promise<void> {
 
 // 講義室情報が表示されるまで待つ
 async function waitForLoading(): Promise<void> {
-  for (let limit = 100; limit--; ) {
-    await new Promise((r) => setTimeout(r, 100));
+  for (let limit = 20; limit--; ) {
+    await new Promise((r) => setTimeout(r, 500));
 
     // ロード中の時は#divTblの子がimgになる
     const loaded =
@@ -84,20 +84,20 @@ function extractRoomsOfRow(row: HTMLTableRowElement): Room[] {
 
 // 週表示の講義室予約の表のマスからtraPの施設予約情報を抽出する
 function extractRoomOfCell(cell: HTMLTableCellElement): Omit<Room, 'place'>[] {
-  return Array.from(
-    cell.querySelectorAll<HTMLSpanElement>('span > span'),
-  ).flatMap((info) => {
-    const text = info.innerText;
+  let date = cell.dataset.date!; // yyyymmdd;
+  date = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`; // yyyy-mm-dd
+
+  const cards = cell.querySelectorAll<HTMLSpanElement>('span > span');
+
+  return Array.from(cards).flatMap(({ innerText: text }) => {
     if (!/デジタル創作同好会traP/.test(text)) {
       return [];
     }
 
-    let date = cell.dataset.date!; // yyyymmdd;
     const [, timeStart, timeEnd] = text.match(/\((\d\d:\d\d).*(\d\d:\d\d)\)/)!; // hh:mm
-
-    date = `${date.slice(0, 4)}-${date.slice(4, 6)}-${date.slice(6, 8)}`;
-    const datetimeStart = new Date(`${date}T${timeStart}:00`);
-    const datetimeEnd = new Date(`${date}T${timeEnd}:00`);
-    return { timeStart: datetimeStart, timeEnd: datetimeEnd };
+    return {
+      timeStart: new Date(`${date}T${timeStart}:00`),
+      timeEnd: new Date(`${date}T${timeEnd}:00`),
+    };
   });
 }
