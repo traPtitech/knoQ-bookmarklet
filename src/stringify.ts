@@ -25,8 +25,11 @@ export function toMdTableString<T extends Table>(xs: T[]): string {
 
   return withSettingDateFormatISO(() => {
     const header = [...Object.keys(xs[0])];
+    const alignment = Array(header.length).fill('-');
     const rows = xs.map((x) => [...Object.values(x)].map(String));
-    return [header, ...rows].map((row) => `|${row.join('|')}|`).join('\n');
+    return [header, alignment, ...rows]
+      .map((row) => `|${row.join('|')}|`)
+      .join('\n');
   });
 }
 
