@@ -78,7 +78,7 @@ function extractRoomsOfRow(row: HTMLTableRowElement): Room[] {
     : row.cells[0].innerText.trim();
   const cells = row.querySelectorAll('td');
   return Array.from(cells).flatMap((cell) =>
-    extractRoomOfCell(cell).map((room) => ({ ...room, place: roomName })),
+    extractRoomOfCell(cell).map((room) => ({ place: roomName, ...room })),
   );
 }
 
