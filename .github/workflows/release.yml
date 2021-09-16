@@ -44,8 +44,9 @@ jobs:
       - name: Commit README.md if changed
         id: commit-readme
         run: |-
-          git add .
-          git config --global user.email "action@github.com"
-          git config --global user.name "GitHub Action"
-          git commit -m "Updated README" -a || echo "No changes to commit"
+          git diff
+          git config --global user.email "actions@users.noreply.github.com"
+          git config --global user.name "README bot"
+          git add -A
+          git commit -m "Updated README" -a || exit 0
           git push
