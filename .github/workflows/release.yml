@@ -38,3 +38,14 @@ jobs:
           asset_path: ./dist/index.js
           asset_name: index.js
           asset_content_type: text/javascript
+      - name: Update README.md
+        id: update-readme
+        run: node ./scripts/updateReadme.js
+      - name: Commit README.md if changed
+        id: commit-readme
+        run: |-
+          git add .
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git commit -m "Updated README" -a || echo "No changes to commit"
+          git push
