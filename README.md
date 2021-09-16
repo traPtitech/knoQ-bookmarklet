@@ -7,16 +7,8 @@
 - [ ] 部屋情報をMD形式の表としてクリップボードにコピー
 
 ## 使用方法
-1. ブックマークレットをお使いの登録
-<a id="bookmarklet">ブックマークレット</a>
+1. ブックマークレットをお使いのブラウザに登録
+    1. [このリンク先のJavascript](https://github.com/traPtitech/knoQ-bookmarklet/releases/latest/download/index.js)の全文をブックマークに登録
 2. 教務Webの「施設予約ページ」にアクセス
 3. ブックマークレットを走らせる
 4. CSVファイルのダウンロードが始まる
-
-<script>
-  fetch("https://github.com/traPtitech/knoQ-bookmarklet/releases/download/v0.1.0/index.js")
-    .then((res) => res.text())
-    .then((js) => {
-      document.getElementById("bookmarklet").href = js;
-    });
-</script>
