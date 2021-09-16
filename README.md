@@ -8,7 +8,7 @@
 
 ## 使用方法
 1. ブックマークレットをお使いのブラウザに登録
-<a id="bookmarklet" href="">ブックマークレット</a>
+    1. [このリンク先のJavascript](https://github.com/traPtitech/knoQ-bookmarklet/releases/latest/download/index.js)の全文をブックマークに登録
 2. 教務Webの「施設予約ページ」にアクセス
 3. ブックマークレットを走らせる
 4. CSVファイルのダウンロードが始まる
