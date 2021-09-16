@@ -2,11 +2,11 @@ import { extractRooms, Room } from './extract';
 import { downloadTextAs, copyTextToClipboard } from './save';
 import { toCsvString, toMdTableString } from './stringify';
 
-function toMdData(room: Room) {
-  const dateString = (date: Date) => date.toLocaleDateString('ja-JP');
-  const timeString = (date: Date) =>
-    date.toLocaleTimeString('ja-JP', { timeStyle: 'short' });
+const dateString = (date: Date) => date.toLocaleDateString('ja-JP');
+const timeString = (date: Date) =>
+  date.toLocaleTimeString('ja-JP', { timeStyle: 'short' });
 
+function toMdData(room: Room) {
   return {
     日付: dateString(room.timeStart),
     場所: room.place,
@@ -16,10 +16,6 @@ function toMdData(room: Room) {
 }
 
 function toGoogleCalendarData(room: Room) {
-  const dateString = (date: Date) => date.toLocaleDateString('en-US');
-  const timeString = (date: Date) =>
-    date.toLocaleTimeString('en-US', { timeStyle: 'short' });
-
   return {
     Subject: '進捗部屋',
     Location: room.place,
