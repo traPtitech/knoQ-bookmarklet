@@ -49,8 +49,9 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git add -A
           git commit -m "Updated README" -a || exit 0
-          git checkout -b tmp
-          git checkout main
+          git switch -c tmp
+          git branch
+          git switch main
           git merge tmp
           git push origin main
           git branch -d tmp
