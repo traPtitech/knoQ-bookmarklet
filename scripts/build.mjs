@@ -11,7 +11,6 @@ async function main() {
 
   let src = (await fs.readFile('./dist/index.js')).toString();
   src = src.replace(/`\n`/g, '"\\n"');
-  src = src.replaceAll('"', "'");
   src = 'javascript:' + src;
   src = src.trim();
   await fs.writeFile('./dist/index.js', src);

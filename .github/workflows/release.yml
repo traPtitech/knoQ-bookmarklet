@@ -52,7 +52,6 @@ jobs:
           git add -A
           git commit -m "Updated README" -a || exit 0
           git switch -c tmp
-          git branch
           git switch main
           git merge tmp
           git push origin main
