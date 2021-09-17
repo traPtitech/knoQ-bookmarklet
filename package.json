@@ -4,10 +4,11 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "node ./scripts/build.js",
+    "build": "node ./scripts/build.mjs",
     "clean": "rm -rf ./dist",
     "typecheck": "tsc --noEmit",
     "lint:fix": "eslint --fix src",
+    "update-readme": "node ./scripts/updateReadme.mjs",
     "prepare": "husky install"
   },
   "devDependencies": {
