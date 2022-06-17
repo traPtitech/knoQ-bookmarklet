@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 
-export type Room = {
-  place: string;
-  timeStart: Date;
-  timeEnd: Date;
-};
-
 // 講義室予約ページから4週間分のtraPの施設予約を抽出する
 export async function extractRooms(): Promise<Room[]> {
   const rooms: Room[] = [];

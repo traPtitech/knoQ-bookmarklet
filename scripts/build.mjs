@@ -9,11 +9,9 @@ async function main() {
     minify: true,
   });
 
-  let src = (await fs.readFile('./dist/index.js')).toString();
-  src = src.replace(/`\n`/g, '"\\n"');
-  src = 'javascript:' + src;
-  src = src.trim();
-  await fs.writeFile('./dist/index.js', src);
+  const src = (await fs.readFile('./dist/index.js')).toString();
+  const bookmarklet = 'javascript:' + src.trim().split('\n').join('\\n');
+  await fs.writeFile('./dist/index.js', bookmarklet);
 }
 
 main().catch((err) => {
