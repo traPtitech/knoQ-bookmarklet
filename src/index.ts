@@ -1,5 +1,5 @@
 import { extractRooms, Room } from './extract';
-import { downloadTextAs, copyTextToClipboard } from './save';
+import { downloadTextAs } from './save';
 import { toCsvString, toMdTableString } from './stringify';
 
 const dateString = (date: Date) => date.toLocaleDateString('ja-JP');
@@ -29,19 +29,11 @@ function toGoogleCalendarData(room: Room) {
 async function main() {
   const rooms = await extractRooms();
 
-  if (window.confirm('進捗部屋表をコピーしますか?')) {
-    const text = toMdTableString(rooms.map(toMdData));
-    const ok = copyTextToClipboard(text);
-    if (ok) {
-      window.alert('コピーしました');
-    } else {
-      window.alert('コピーできませんでした');
-    }
-  }
-
-  if (window.confirm('CSVをダウンロードしますか?')) {
-    const text = toCsvString(rooms.map(toGoogleCalendarData));
-    downloadTextAs('cal.csv', text, { type: 'text/csv' });
+  if (window.confirm('進捗部屋表をダウンロードしますか?')) {
+    const md = toMdTableString(rooms.map(toMdData));
+    const csv = toCsvString(rooms.map(toGoogleCalendarData));
+    downloadTextAs('cal.md', md, { type: 'text/markdown' });
+    downloadTextAs('cal.csv', csv, { type: 'text/csv' });
   }
 }
 

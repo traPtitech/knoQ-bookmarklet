@@ -10,13 +10,3 @@ export function downloadTextAs(
   a.setAttribute('download', fileName);
   a.click();
 }
-
-export function copyTextToClipboard(text: string): boolean {
-  const tmp = document.createElement('textarea');
-  tmp.value = text;
-  document.body.appendChild(tmp);
-  tmp.select();
-  const ok = document.execCommand('copy');
-  document.body.removeChild(tmp);
-  return ok;
-}
