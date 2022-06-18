@@ -46,6 +46,7 @@ async function loadNextWeekReservations(): Promise<void> {
 // 講義室情報が表示されるまで待つ
 function waitForLoading(): Promise<void> {
   return new Promise((resolve) => {
+    // div#divTblの中に講義室情報が表示されるのをMutationObserverで監視
     const target = document.querySelector('#divTbl')!;
     const observer = new MutationObserver((mutationList, observer) => {
       for (const mutation of mutationList) {
@@ -65,7 +66,7 @@ function waitForLoading(): Promise<void> {
 
 // 週表示の講義室予約ページから1週間分のtraPの施設予約を抽出する
 function extractRoomsOneWeek(): Room[] {
-  // traPの枠のリストを取得
+  // traPの予約枠のリストを取得
   const elIter = document.evaluate(
     '//span[contains(., "traP")]',
     document,
@@ -81,16 +82,19 @@ function extractRoomsOneWeek(): Room[] {
     el !== null;
     el = elIter.iterateNext() as HTMLElement | null
   ) {
-    const td = el.closest('td')!;
-    const tr = td.closest('tr')!;
+    // 予約枠の表示から開始時間と終了時間を抽出 (HH:mm)
+    const [, start, end] = el.innerText.match(/(\d\d:\d\d) - (\d\d:\d\d)/)!;
 
+    // 予約枠を囲むtd要素(表のセル)のdata-dateに日付が入っている (YYYYMMDD)
+    const td = el.closest('td')!;
+    const date = td.dataset.date!;
+
+    // 予約枠が入っている表の行頭から部屋名を抽出
+    // trTopがついている場合は0列目に建物名が入ってくる
+    const tr = td.closest('tr')!;
     const place = (
       tr.children[tr.classList.contains('trTop') ? 1 : 0] as HTMLElement
     ).innerText;
-    // YYYYMMDD
-    const date = td.dataset['date']!;
-    // HH:mm
-    const [, start, end] = el.innerText.match(/(\d\d:\d\d) - (\d\d:\d\d)/)!;
 
     rooms.push({
       place,

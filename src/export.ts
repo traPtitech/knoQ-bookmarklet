@@ -3,9 +3,6 @@ const timeString = (date: Date) =>
   date.toLocaleTimeString('ja-JP', { timeStyle: 'short' });
 
 export function createRoomsMdTable(rooms: Room[]): string {
-  if (rooms.length === 0) {
-    return '';
-  }
   const headerStr = '|日付|場所|開始時刻|終了時刻|\n|-|-|-|-|\n';
   const rowsStr = rooms
     .map((room) => {
@@ -19,11 +16,8 @@ export function createRoomsMdTable(rooms: Room[]): string {
 }
 
 export function createKnoqCsv(rooms: Room[]): string {
-  if (rooms.length === 0) {
-    return '';
-  }
   const headerStr =
-    'Subject,Location,Start Date,End Date, Start Time, End Time\n';
+    'Subject,Location,Start Date,End Date,Start Time,End Time\n';
   const rowsStr = rooms
     .map((room) => {
       const startDate = dateString(room.timeStart);
