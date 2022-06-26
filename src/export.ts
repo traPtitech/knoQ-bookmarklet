@@ -1,6 +1,11 @@
-const dateString = (date: Date) => date.toLocaleDateString('ja-JP');
+const dateString = (date: Date) =>
+  date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  });
 const timeString = (date: Date) =>
-  date.toLocaleTimeString('ja-JP', { timeStyle: 'short' });
+  date.toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit' });
 
 export function createRoomsMdTable(rooms: Room[]): string {
   const headerStr = '|日付|場所|開始時刻|終了時刻|\n|-|-|-|-|\n';
@@ -17,7 +22,7 @@ export function createRoomsMdTable(rooms: Room[]): string {
 
 export function createKnoqCsv(rooms: Room[]): string {
   const headerStr =
-    'Subject,Location,Start Date,End Date,Start Time,End Time\n';
+    'Subject,Location,Start date,End date,Start time,End time\n';
   const rowsStr = rooms
     .map((room) => {
       const startDate = dateString(room.timeStart);
