@@ -18,9 +18,11 @@ export async function extractRooms(): Promise<Room[]> {
 
 // 施設予約ページで週間表示の講義室予約を表示させる
 async function loadWeeklyReservations(): Promise<void> {
+  // TODO: make robuster
   // 週ボタンをクリック
   document.querySelector<HTMLElement>('#lblModeW')!.click();
 
+  // TODO: make robuster
   // 講義室[大岡山]ボタンをクリック
   document
     .querySelector<HTMLElement>(
@@ -33,6 +35,7 @@ async function loadWeeklyReservations(): Promise<void> {
 
 // 翌週分の講義室予約を表示する
 async function loadNextWeekReservations(): Promise<void> {
+  // TODO: make robuster
   // 翌週ボタンをクリック
   document
     .querySelector<HTMLElement>(
@@ -68,7 +71,7 @@ function waitForLoading(): Promise<void> {
 function extractRoomsOneWeek(): Room[] {
   // traPの予約枠のリストを取得
   const elIter = document.evaluate(
-    '//span[contains(., "traP")]',
+    '//text()[contains(., "traP")]/..',
     document,
     null,
     XPathResult.UNORDERED_NODE_ITERATOR_TYPE,
@@ -85,16 +88,17 @@ function extractRoomsOneWeek(): Room[] {
     // 予約枠の表示から開始時間と終了時間を抽出 (HH:mm)
     const [, start, end] = el.innerText.match(/(\d\d:\d\d) - (\d\d:\d\d)/)!;
 
-    // 予約枠を囲むtd要素(表のセル)のdata-dateに日付が入っている (YYYYMMDD)
-    const td = el.closest('td')!;
+    // 予約枠表示の祖先のdata-dateに日付が入っている (YYYYMMDD)
+    const td = el.closest<HTMLElement>('*[data-date]')!;
     const date = td.dataset.date!;
 
+    // TODO: make robuster
     // 予約枠が入っている表の行頭から部屋名を抽出
     // trTopがついている場合は0列目に建物名が入ってくる
     const tr = td.closest('tr')!;
     const place = (
       tr.children[tr.classList.contains('trTop') ? 1 : 0] as HTMLElement
-    ).innerText;
+    ).innerText.trim();
 
     rooms.push({
       place,
